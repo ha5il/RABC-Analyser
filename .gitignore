@@ -13,9 +13,10 @@
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
-[Rr]elease/
+[Rr]elease/RABC Analyser.iobj
+[Rr]elease/RABC Analyser.ipdb
+[Rr]elease/RABC Analyser.pdb
 [Rr]eleases/
-x64/
 x86/
 bld/
 [Bb]in/
@@ -259,3 +260,7 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/RABC Analyser/Release/RABC Analyser.tlog
+/RABC Analyser/x64/Release/RABC Analyser.tlog
+*.iobj
+*.ipdb
