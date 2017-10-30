@@ -49,32 +49,14 @@ int main() {
 		RABC_file_number++;
 	}
 	updateScreen("Heading");
-	//cout << endl << "Total kgs Washer = " << yellow << total_kgs_washed << white;
-
-	/*//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	//delete all from here to
-	
-	cout << endl << endl << "-----------------" << endl;
-	cout << "total_rabc_files = " << total_rabc_files << endl;
-	cout << "timestamp[1] = " << time_stamp[1] << endl;
-	cout << "timestamp[2] = " << time_stamp[2] << endl;
-	cout << "timestamp[3] = " << time_stamp[3] << endl;
-	cout << endl << endl << "-----------------" << endl;
-	cout << endl << endl << "-----------------" << endl;
-	cout << "kgs[1] = " << kgs_washed[1] << endl;
-	cout << "kgs[2] = " << kgs_washed[2] << endl;
-	cout << "kgs[3] = " << kgs_washed[3] << endl;
-	cout << endl << endl << "-----------------" << endl;
-
-	// here!!!!!!!!!!!!!!!*/
 
 	for (int k = 1; k <= total_rabc_files; k++)
 	{
 		total_kgs_washed = total_kgs_washed + kgs_washed[k];
-		cout << "At " << blue << time_stamp[k] << white << " your machine washed " << green << kgs_washed[k] << white << " kg of cloth" << endl;
+		cout << "At " << blue << time_stamp[k] << white << " program " << yellow << setw(21) << prg_name[k] << white << " washed " << green << setw(3) << kgs_washed[k] << white << " kg of cloth" << endl;
 	}
 
-	cout << endl << "Total Washes = " << green << total_kgs_washed << white << " kg";
+	cout << endl << "Total Washes = " << yellow << total_kgs_washed << white << " kg";
 	cout << endl << endl << endl << endl << endl << endl << endl << endl << green << setfill('-') << setw(25) << "-" << "End of Program" << setfill('-') << setw(25) << "-" << white << endl;
 	//Ask whether to exit or not
 	std::string create_csv;
@@ -126,7 +108,7 @@ void analyse_RABC (string filepath)
 	int lineNumber = 0;
 	int i;
 	int program_name_length_finder = 1;
-	string char1, char2, char3, char4, char5, char6;
+	string individual_char[21]; // as max 20 characters allowed on program name
 	int int1, int2, int3;
 	string colon = ":";
 	ifstream myfile(filepath);
@@ -142,23 +124,22 @@ void analyse_RABC (string filepath)
 							// time and program name
 							if (line[i] == 't' && line[i + 1] == '_' && line[i + 2] == 't' && line[i + 3] == 'i' && line[i + 4] == 'm' && line[i + 5] == 'e')
 							{
-								char1 = line[i + 8];
-								char2 = line[i + 9];
-								char3 = line[i + 11];
-								char4 = line[i + 12];
-								char5 = line[i + 14];
-								char6 = line[i + 15];
-								time_stamp[RABC_file_number] = char1 + char2 + colon + char3 + char4 + colon + char5 + char6;
-
-
-
-				/*				while (line[i + 32 + program_name_length_finder] != '"') program_name_length_finder++;
-								for (int j = 1; j < program_name_length_finder; j++)
+								individual_char[1] = line[i + 8];
+								individual_char[2] = line[i + 9];
+								individual_char[3] = line[i + 11];
+								individual_char[4] = line[i + 12];
+								individual_char[5] = line[i + 14];
+								individual_char[6] = line[i + 15];
+								time_stamp[RABC_file_number] = individual_char[1] + individual_char[2] + colon + individual_char[3] + individual_char[4] + colon + individual_char[5] + individual_char[6];
+								
+							while (line[i + 32 + program_name_length_finder] != '"') program_name_length_finder++;
+								for (int j = 1; j <= program_name_length_finder; j++)
 								{
-									prg_name[RABC_file_number] = prg_name[RABC_file_number] + line[32 + j];
+									individual_char[j] = line[i + 31 + j];
+									prg_name[RABC_file_number] = prg_name[RABC_file_number] + individual_char[j];
 								}
-								i = i + 32; // updated i as loop can skip these values. Do add length of program name in future update...
-							*/}
+								i = i + 33 + program_name_length_finder; // updated i as loop can skip these values.
+							}
 							
 							// kgs washed
 							else if (line[i] == 'w' && line[i + 1] == 'e' && line[i + 2] == 'i' && line[i + 3] == 'g' && line[i + 4] == 'h' && line[i + 5] == 't')
