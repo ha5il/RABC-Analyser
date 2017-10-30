@@ -181,11 +181,14 @@ void createCSV(void)
 	string csvFileName = "\\Report.csv";
 	dropped_folder_path = dropped_folder_path + csvFileName;
 	new_csv_file.open(dropped_folder_path);
-	new_csv_file << "This is the first cell in the first column.\n";
-	new_csv_file << "a,b,c,\n";
-	new_csv_file << "c,s,v,\n";
-	new_csv_file << "1,2,3.456\n";
-	new_csv_file << "semi;colon";
+	new_csv_file << "Time,Program,kgs Washed\n";
+
+	for (int l = 1; l <= total_rabc_files; l++)
+	{
+
+		new_csv_file << time_stamp[l] << "," << prg_name[l] << "," << kgs_washed[l] << endl;
+	}
+	new_csv_file << ",Total," << total_kgs_washed << endl; // Prints the total kg line
 	new_csv_file.close();
 	updateScreen("CSV_created");
 }
