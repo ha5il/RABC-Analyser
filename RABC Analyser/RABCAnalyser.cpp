@@ -1,3 +1,10 @@
+/*********************************************
+THINGS TO IMPROVE / RESOLVE
+1. Power Faiure error adds extra weight
+2. Self counting total RABC files and analysing without rename
+
+****************************************************/
+
 #include "stdafx.h"
 #include <iostream>
 #include <fstream>
