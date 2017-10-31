@@ -1,6 +1,3 @@
-// RABCAnalyser.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
 #include <iostream>
 #include <fstream>
@@ -20,11 +17,13 @@ int total_rabc_files;
 int total_kgs_washed = 0;
 string dropped_folder_path;
 string time_stamp[1000];
+string date_stamp[1000];
 string prg_name[1000];
 int kgs_washed[1000];
 int RABC_file_number = 1;
 
-int main() {
+int main() 
+{
 	int i;
 	updateScreen("Heading");
 	updateScreen("Rename_Instruction");
@@ -53,7 +52,7 @@ int main() {
 	for (int k = 1; k <= total_rabc_files; k++)
 	{
 		total_kgs_washed = total_kgs_washed + kgs_washed[k];
-		cout << "At " << blue << time_stamp[k] << white << " program " << yellow << setw(21) << prg_name[k] << white << " washed " << green << setw(3) << kgs_washed[k] << white << " kg of cloth" << endl;
+		cout << "On " << date_stamp[k] << " at " << blue << time_stamp[k] << white << " program " << yellow << setw(21) << prg_name[k] << white << " washed " << green << setw(3) << kgs_washed[k] << white << " kg of cloth" << endl;
 	}
 
 	cout << endl << "Total Washes = " << yellow << total_kgs_washed << white << " kg";
@@ -107,10 +106,11 @@ void analyse_RABC (string filepath)
 	string line;
 	int lineNumber = 0;
 	int i;
-	int program_name_length_finder = 1;
+	int program_name_length_finder = 0;
 	string individual_char[21]; // as max 20 characters allowed on program name
 	int int1, int2, int3;
 	string colon = ":";
+	string slash = "/";
 	ifstream myfile(filepath);
 	if (myfile.is_open())
 	{
@@ -119,26 +119,38 @@ void analyse_RABC (string filepath)
 			lineNumber++;
 			if (lineNumber == 2)
 			{
-				for (i = 38; i < 175; i++)
+				for (i = 19; i < 175; i++)
 						{
-							// time and program name
-							if (line[i] == 't' && line[i + 1] == '_' && line[i + 2] == 't' && line[i + 3] == 'i' && line[i + 4] == 'm' && line[i + 5] == 'e')
+							if (line[i] == 'd' && line[i + 1] == 'a' && line[i + 2] == 't' && line[i + 3] == 'e')
 							{
-								individual_char[1] = line[i + 8];
-								individual_char[2] = line[i + 9];
-								individual_char[3] = line[i + 11];
-								individual_char[4] = line[i + 12];
-								individual_char[5] = line[i + 14];
-								individual_char[6] = line[i + 15];
-								time_stamp[RABC_file_number] = individual_char[1] + individual_char[2] + colon + individual_char[3] + individual_char[4] + colon + individual_char[5] + individual_char[6];
+								//date
+								individual_char[1] = line[i + 6];
+								individual_char[2] = line[i + 7];
+								individual_char[3] = line[i + 8];
+								individual_char[4] = line[i + 9];
+								individual_char[5] = line[i + 11];
+								individual_char[6] = line[i + 12];
+								individual_char[7] = line[i + 14];
+								individual_char[8] = line[i + 15];
+								date_stamp[RABC_file_number] = individual_char[1] + individual_char[2] + individual_char[3] + individual_char[4] + slash + individual_char[5] + individual_char[6] + slash + individual_char[7] + individual_char[8];
+
+								//time
+								individual_char[9] = line[i + 30];
+								individual_char[10] = line[i + 31];
+								individual_char[11] = line[i + 33];
+								individual_char[12] = line[i + 34];
+								individual_char[13] = line[i + 36];
+								individual_char[14] = line[i + 37];
+								time_stamp[RABC_file_number] = individual_char[9] + individual_char[10] + colon + individual_char[11] + individual_char[12] + colon + individual_char[13] + individual_char[14];
 								
-							while (line[i + 32 + program_name_length_finder] != '"') program_name_length_finder++;
+								// program name
+							while (line[i + 54 + program_name_length_finder] != '"') program_name_length_finder++;
 								for (int j = 1; j <= program_name_length_finder; j++)
 								{
-									individual_char[j] = line[i + 31 + j];
+									individual_char[j] = line[i + 53 + j];
 									prg_name[RABC_file_number] = prg_name[RABC_file_number] + individual_char[j];
 								}
-								i = i + 33 + program_name_length_finder; // updated i as loop can skip these values.
+								i = i + 55 + program_name_length_finder; // updated i as loop can skip these values.
 							}
 							
 							// kgs washed
@@ -181,14 +193,14 @@ void createCSV(void)
 	string csvFileName = "\\Report.csv";
 	dropped_folder_path = dropped_folder_path + csvFileName;
 	new_csv_file.open(dropped_folder_path);
-	new_csv_file << "Time,Program,kgs Washed\n";
+	new_csv_file << "Date,Time,Program,kgs Washed\n";
 
 	for (int l = 1; l <= total_rabc_files; l++)
 	{
 
-		new_csv_file << time_stamp[l] << "," << prg_name[l] << "," << kgs_washed[l] << endl;
+		new_csv_file << date_stamp[l] << "," << time_stamp[l] << "," << prg_name[l] << "," << kgs_washed[l] << endl;
 	}
-	new_csv_file << ",Total," << total_kgs_washed << endl; // Prints the total kg line
+	new_csv_file << endl << ",,Total," << total_kgs_washed << endl; // Prints the total kg line
 	new_csv_file.close();
 	updateScreen("CSV_created");
 }
