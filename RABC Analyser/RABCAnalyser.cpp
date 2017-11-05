@@ -88,7 +88,7 @@ void updateScreen(std::string region)
 	if (region == "Heading")
 	{
 		system("CLS");
-		cout << green << setw(45) << right << "RABC File Analyser for Danube Washer" << white << endl;
+		cout << green << setw(55) << right << "RABC File Analyser for Danube Washer v1.2" << white << endl;
 	}
 
 	else if (region == "Rename_Instruction")
