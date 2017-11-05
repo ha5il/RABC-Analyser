@@ -73,14 +73,15 @@ int main()
 		if (create_csv == "yes" || create_csv == "y")
 		{
 			createCSV();
-			exit(0);
+			break;
 	
 		}
 		else if (create_csv == "no" || create_csv == "n")
 		{
-			exit(0);
+			break;
 		}
 	} while (1);
+	return (0);
 }
 
 void updateScreen(std::string region)
