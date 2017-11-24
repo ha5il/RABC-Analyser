@@ -2,7 +2,7 @@
 THINGS TO IMPROVE / RESOLVE
 1. Power Faiure error adds extra weight.
 2. Skips the file with error, meanwhile prints the error also for easier service
-3. Remove overwriting of Report.csv every time csv beint created.
+3. Remove overwriting of Report.csv every time csv being created.
 ****************************************************/
 
 #include "stdafx.h"
@@ -41,7 +41,7 @@ int main()
 		analyse_RABC(search_data.cFileName);
 		RABC_file_number++;
 		if (FindNextFile(handle, &search_data) == FALSE)
-			break;
+		break;
 	}
 	FindClose(handle);
 	total_rabc_files = RABC_file_number - 1;
@@ -98,6 +98,13 @@ void updateScreen(std::string region)
 	else if (region == "ZeroKGwash_Error")
 	{
 		cout << endl << "This file should be along with RABC folder and make sure the RABC folder is not empty!" << endl << endl << red << "Press any key and Enter to Exit..." << white << endl;
+		cin >> any_key_halt;
+		exit(0);
+	}
+
+	else
+	{
+		cout << endl << endl << green << "OMG! How come you reach here!" << endl << "Little buggy needs to be renamed ;)" << white << endl;
 		cin >> any_key_halt;
 		exit(0);
 	}
