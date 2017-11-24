@@ -1,8 +1,8 @@
 /*********************************************
 THINGS TO IMPROVE / RESOLVE
-1. Power Faiure error adds extra weight
-2. Self counting total RABC files and analysing without rename
-
+1. Power Faiure error adds extra weight.
+2. Skips the file with error, meanwhile prints the error also for easier service
+3. Remove overwriting of Report.csv every time csv beint created.
 ****************************************************/
 
 #include "stdafx.h"
@@ -22,38 +22,29 @@ void createCSV(void);
 //List of Global Variables
 int total_rabc_files;
 int total_kgs_washed = 0;
-string dropped_folder_path;
 string time_stamp[1000];
 string date_stamp[1000];
 string prg_name[1000];
 int kgs_washed[1000];
 int RABC_file_number = 1;
+char any_key_halt;
 
 int main() 
 {
-	int i;
-	updateScreen("Heading");
-	updateScreen("Rename_Instruction");
-	cout << blue << "Enter total number of RABC files to analysis: " << white;
-	cin >> total_rabc_files;
-
-	if (!total_rabc_files > 0) updateScreen("File_Number_Incorrect");
-
-	cout << endl << blue << "Drag and Drop the RABC folder here: " << white;
-	cin >> dropped_folder_path;
-	string temp_file_path1 = "\\RABC (";
-	string temp_file_path2 = ").rabc";
-	string temp_final_file_path;
-
 	updateScreen("Heading");
 	cout << yellow << "Analysing..." << white;
-
-	for (i = 1; i <= total_rabc_files; i++)
+	WIN32_FIND_DATA search_data;
+	memset(&search_data, 0, sizeof(WIN32_FIND_DATA));
+	HANDLE handle = FindFirstFile("./RABC/*.RABC", &search_data);
+	while (handle != INVALID_HANDLE_VALUE)
 	{
-		temp_final_file_path = dropped_folder_path + temp_file_path1 + to_string(i) + temp_file_path2;
-		analyse_RABC(temp_final_file_path);
+		analyse_RABC(search_data.cFileName);
 		RABC_file_number++;
+		if (FindNextFile(handle, &search_data) == FALSE)
+			break;
 	}
+	FindClose(handle);
+	total_rabc_files = RABC_file_number - 1;
 	updateScreen("Heading");
 
 	for (int k = 1; k <= total_rabc_files; k++)
@@ -61,9 +52,12 @@ int main()
 		total_kgs_washed = total_kgs_washed + kgs_washed[k];
 		cout << "On " << date_stamp[k] << " at " << blue << time_stamp[k] << white << " program " << yellow << setw(21) << prg_name[k] << white << " washed " << green << setw(3) << kgs_washed[k] << white << " kg of cloth" << endl;
 	}
+	// Making sure total kgs washed is not 0;
+	if (total_kgs_washed == 0) updateScreen("ZeroKGwash_Error");
 
 	cout << endl << "Total Washes = " << yellow << total_kgs_washed << white << " kg";
-	cout << endl << endl << endl << endl << endl << endl << endl << endl << green << setfill('-') << setw(25) << "-" << "End of Program" << setfill('-') << setw(25) << "-" << white << endl;
+	cout << endl << endl << endl << endl << endl << endl << endl << endl;
+
 	//Ask whether to exit or not
 	std::string create_csv;
 	do
@@ -81,6 +75,9 @@ int main()
 			break;
 		}
 	} while (1);
+
+	cout << endl << green << setfill('-') << setw(25) << "-" << "End of Program" << setfill('-') << setw(25) << "-" << endl << endl << red << "Press any key and Enter to Exit..." << white << endl;
+	cin >> any_key_halt;
 	return (0);
 }
 
@@ -89,22 +86,19 @@ void updateScreen(std::string region)
 	if (region == "Heading")
 	{
 		system("CLS");
-		cout << green << setw(55) << right << "RABC File Analyser for Danube Washer v1.2" << white << endl;
+		cout << green << setw(55) << right << "RABC File Analyser for Danube Washer v1.3" << white << endl;
 	}
 
-	else if (region == "Rename_Instruction")
-	{
-		cout << endl << "Please follow the following instructions to rename files:" << endl << endl << "1. Open the RABC folder." << endl << "2. Select the first file." << endl << "3. Press Ctrl + A and then F2." << endl << "4. Type RABC and Press Enter." << endl << endl;
-	}
 
 	else if (region == "CSV_created")
 	{
-		cout << blue << "Success and saved on same RABC folder as Report.csv" << white << endl << endl;
+		cout << blue << "Success and saved near same RABC folder as Report.csv" << white << endl << endl;
 	}
 	
-	else if (region == "File_Number_Incorrect")
+	else if (region == "ZeroKGwash_Error")
 	{
-		cout << red << "Incorrect Number of RABC files" << white << endl << endl;
+		cout << endl << "This file should be along with RABC folder and make sure the RABC folder is not empty!" << endl << endl << red << "Press any key and Enter to Exit..." << white << endl;
+		cin >> any_key_halt;
 		exit(0);
 	}
 }
@@ -117,7 +111,9 @@ void analyse_RABC (string filepath)
 	int program_name_length_finder = 0;
 	string individual_char[21]; // as max 20 characters allowed on program name
 	int int1, int2, int3;
-	string colon = ":";
+	string colon = "./RABC/";  //Minimized use of extra string
+	filepath = colon + filepath;
+	colon = ":";
 	string slash = "/";
 	ifstream myfile(filepath);
 	if (myfile.is_open())
@@ -190,7 +186,8 @@ void analyse_RABC (string filepath)
 	}
 	else
 	{
-		cout << endl << endl << "Unable to open file on path: " << filepath << endl << endl << red << "Exitting..." << white << endl << endl << endl << endl;
+		cout << endl << endl << "Unable to open file on path: " << filepath << endl << endl << red << "Press any key and Enter to Exit..." << white << endl << endl << endl << endl;
+		cin >> any_key_halt;
 		exit(0);
 	}
 }
@@ -198,9 +195,7 @@ void analyse_RABC (string filepath)
 void createCSV(void)
 {
 	ofstream new_csv_file;
-	string csvFileName = "\\Report.csv";
-	dropped_folder_path = dropped_folder_path + csvFileName;
-	new_csv_file.open(dropped_folder_path);
+	new_csv_file.open("Report.csv");
 	new_csv_file << "Date,Time,Program,kgs Washed\n";
 
 	for (int l = 1; l <= total_rabc_files; l++)
