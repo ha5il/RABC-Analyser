@@ -104,7 +104,7 @@ void updateScreen(std::string region)
 
 	else
 	{
-		cout << endl << endl << green << "OMG! How come you reach here!" << endl << "Little buggy needs to be renamed ;)" << white << endl;
+		cout << endl << endl << green << "OMG! How come you reach here o.O" << endl << "Little buggy needs to be renamed ;)" << white << endl;
 		cin >> any_key_halt;
 		exit(0);
 	}
