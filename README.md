@@ -17,7 +17,7 @@ This console app is written in C/C++ on Visual Studio 2017 and the code is avail
 
 This is offline RABC files analyser for Windows [32 bit system](https://github.com/ha5il/RABC-Analyser/raw/master/Release/RABC%20Analyser.exe) and [64 bit System](https://github.com/ha5il/RABC-Analyser/raw/master/x64/Release/RABC%20Analyser.exe).
 
-## Using Instruction
+## Instructions to use
 
 ```sh
 - Get RABC files from Washer Extractor
