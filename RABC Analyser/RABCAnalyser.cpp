@@ -167,13 +167,18 @@ void analyse_RABC (string filepath)
 							// kgs washed
 							else if (line[i] == 'w' && line[i + 1] == 'e' && line[i + 2] == 'i' && line[i + 3] == 'g' && line[i + 4] == 'h' && line[i + 5] == 't')
 							{
-								if (line[i + 10] == '"')
+								if (line[i+9] == '"') // single digit weight
+								{
+									int1 = line[i + 8] - '0';
+									kgs_washed[RABC_file_number] = int1;
+								}
+								else if (line[i + 10] == '"') // 2 digits weight
 								{
 									int1 = line[i + 8] - '0';
 									int2 = line[i + 9] - '0';
 									kgs_washed[RABC_file_number] = int1 * 10 + int2;
 								}
-								else 
+								else // 3 digit weight
 								{
 									int1 = line[i + 8] - '0';
 									int2 = line[i + 9] - '0';
